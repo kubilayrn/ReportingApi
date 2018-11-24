@@ -17,7 +17,7 @@
 	          <form th:action="@{/login}" th:object="${loginForm}" method="post" class="login-form">
 	          <p th:if="${invalidCredentials}" class="error">Username or Password is wrong</p>
 		            <input id="email" name="email" type="text" placeholder="email" autofocus="autofocus"/>
-		            <input type="password" id="password"name="password" placeholder="password"/>
+		            <input type="password" id="password" name="password" placeholder="password"/>
 	            	<button type="submit">login</button>       
 	          </form>
         </div>

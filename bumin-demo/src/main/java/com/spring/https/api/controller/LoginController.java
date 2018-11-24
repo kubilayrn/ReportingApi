@@ -1,5 +1,6 @@
 package com.spring.https.api.controller;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,12 +9,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.https.api.form.LoginForm;
 
 @Controller
@@ -25,7 +30,7 @@ public class LoginController {
 			// return html page name
 			return "login";
 		}
-
+		
 		@RequestMapping(value = "/login", method = RequestMethod.POST)
 		public String login(@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
 
@@ -34,6 +39,9 @@ public class LoginController {
 			String URLAddress="https://sandbox-reporting.rpdpymnt.com/api/v3/merchant/user/login";
 			String inputString = null;
 			int responseCode = 0;
+			String jwt;
+			
+			
 			
 			if ("demo@bumin.com.tr".equals(email) && "cjaiU8CV".equals(password)) {
 				//Start
@@ -68,16 +76,28 @@ public class LoginController {
 				        // print out URL details
 				        System.out.format("Connecting to %s\nConnection Method: '%s'\nResponse Code is: %d\n", URLAddress, "POST", responseCode);
 				        
-				        System.out.println("----[ OUTPUT BELOW ]-----------------------------------------------------------------");
+				       
 				        
 				        // open the contents of the URL as an inputStream and print to stdout
 				        BufferedReader in = new BufferedReader(new InputStreamReader(
 				            myHttpConnection.getInputStream()));
+				        StringBuffer response=new StringBuffer();
 				        while ((inputString = in.readLine()) != null) {
-				          System.out.println(inputString);
+				          
+				          response.append(inputString);
 				        }
+				        // response tüm body'i okuyor ardından node yardımıyla token alınıyor.
+				        ObjectMapper objectmapper=new ObjectMapper();
+				        JsonNode rootNode =objectmapper.readTree(response.toString());
+				        JsonNode tokenNode=rootNode.path("token");
+				        
+				        jwt=tokenNode.asText();
+				        //Tokeni ekrana alıyoruz
+				        System.out.format("token:%s",jwt);
+				      
+				        
 				        in.close();   
-				        System.out.println("-------------------------------------------------------------------------------------");
+				        
 				      } catch (IOException e) {
 				        e.printStackTrace();
 				      }

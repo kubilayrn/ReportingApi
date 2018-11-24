@@ -3,6 +3,8 @@ package com.spring.https.api.form;
 public class LoginForm {
 	private String email;
 	private String password;
+	
+	
 	public LoginForm() {
 		super();
 		
